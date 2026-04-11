@@ -15,7 +15,20 @@ message ClientMessage {
         StartTaskRequest start_task = 1;
         TaskInput user_input = 2;
         ToolApproval tool_approval = 3;
+        DetachSession detach_session = 4;    // keep container running, disconnect UI
+        ListSessionsRequest list_sessions = 5;
+        ReattachRequest reattach = 6;        // reconnect UI to an existing session
     }
+}
+
+message DetachSession {
+    string session_id = 1;
+}
+
+message ListSessionsRequest {}
+
+message ReattachRequest {
+    string session_id = 1;
 }
 
 message StartTaskRequest {
@@ -23,6 +36,7 @@ message StartTaskRequest {
     string fork_session_id = 2;  // if set, copy context+shares from this session
     string project_name = 3;     // optional: assign agent to this project
     string team_name = 4;        // optional: assign agent to this team within the project
+    bool persistent = 5;         // if true, container keeps running when UI disconnects
 }
 
 message TaskInput {
@@ -45,7 +59,21 @@ message ServerMessage {
         TaskCompleted task_completed = 4;
         TaskUpdate task_update = 5;
         SessionUpdate session_update = 6;
+        SessionList session_list = 7;
     }
+}
+
+message SessionInfo {
+    string session_id = 1;
+    string agent_name = 2;
+    string project_name = 3;
+    string team_name = 4;
+    bool is_busy = 5;
+    string started_at = 6;   // ISO 8601
+}
+
+message SessionList {
+    repeated SessionInfo sessions = 1;
 }
 
 message SessionStarted {
