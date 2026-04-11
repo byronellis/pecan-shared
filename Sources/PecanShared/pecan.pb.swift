@@ -1014,6 +1014,28 @@ public struct Pecan_RegistrationResponse: Sendable {
   /// guest mount path for team workspace
   public var teamMount: String = String()
 
+  /// tools available for this project
+  public var projectTools: [Pecan_ProjectToolDefinition] = []
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+/// Describes a project-level tool the agent can invoke via ToolExecutionRequest.
+/// The actual command is kept server-side; only the interface is sent to the agent.
+public struct Pecan_ProjectToolDefinition: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var name: String = String()
+
+  public var description_p: String = String()
+
+  /// JSON schema for tool parameters; empty = no params
+  public var parametersJsonSchema: String = String()
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -3680,7 +3702,7 @@ extension Pecan_ContextResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
 
 extension Pecan_RegistrationResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".RegistrationResponse"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}success\0\u{3}project_name\0\u{3}team_name\0\u{3}project_directory\0\u{3}project_mount\0\u{3}team_mount\0")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}success\0\u{3}project_name\0\u{3}team_name\0\u{3}project_directory\0\u{3}project_mount\0\u{3}team_mount\0\u{3}project_tools\0")
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3694,6 +3716,7 @@ extension Pecan_RegistrationResponse: SwiftProtobuf.Message, SwiftProtobuf._Mess
       case 4: try { try decoder.decodeSingularStringField(value: &self.projectDirectory) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self.projectMount) }()
       case 6: try { try decoder.decodeSingularStringField(value: &self.teamMount) }()
+      case 7: try { try decoder.decodeRepeatedMessageField(value: &self.projectTools) }()
       default: break
       }
     }
@@ -3718,6 +3741,9 @@ extension Pecan_RegistrationResponse: SwiftProtobuf.Message, SwiftProtobuf._Mess
     if !self.teamMount.isEmpty {
       try visitor.visitSingularStringField(value: self.teamMount, fieldNumber: 6)
     }
+    if !self.projectTools.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.projectTools, fieldNumber: 7)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -3728,6 +3754,47 @@ extension Pecan_RegistrationResponse: SwiftProtobuf.Message, SwiftProtobuf._Mess
     if lhs.projectDirectory != rhs.projectDirectory {return false}
     if lhs.projectMount != rhs.projectMount {return false}
     if lhs.teamMount != rhs.teamMount {return false}
+    if lhs.projectTools != rhs.projectTools {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Pecan_ProjectToolDefinition: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".ProjectToolDefinition"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}description\0\u{3}parameters_json_schema\0")
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.name) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.description_p) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.parametersJsonSchema) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.name.isEmpty {
+      try visitor.visitSingularStringField(value: self.name, fieldNumber: 1)
+    }
+    if !self.description_p.isEmpty {
+      try visitor.visitSingularStringField(value: self.description_p, fieldNumber: 2)
+    }
+    if !self.parametersJsonSchema.isEmpty {
+      try visitor.visitSingularStringField(value: self.parametersJsonSchema, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Pecan_ProjectToolDefinition, rhs: Pecan_ProjectToolDefinition) -> Bool {
+    if lhs.name != rhs.name {return false}
+    if lhs.description_p != rhs.description_p {return false}
+    if lhs.parametersJsonSchema != rhs.parametersJsonSchema {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

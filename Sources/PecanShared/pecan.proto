@@ -276,6 +276,15 @@ message RegistrationResponse {
     string project_directory = 4;   // host directory the project is associated with
     string project_mount = 5;       // guest mount path for project directory
     string team_mount = 6;          // guest mount path for team workspace
+    repeated ProjectToolDefinition project_tools = 7; // tools available for this project
+}
+
+// Describes a project-level tool the agent can invoke via ToolExecutionRequest.
+// The actual command is kept server-side; only the interface is sent to the agent.
+message ProjectToolDefinition {
+    string name = 1;
+    string description = 2;
+    string parameters_json_schema = 3;  // JSON schema for tool parameters; empty = no params
 }
 
 message LLMCompletionResponse {
