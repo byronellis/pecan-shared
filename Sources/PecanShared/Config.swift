@@ -40,17 +40,23 @@ public struct Config: Codable, Sendable {
         case defaultModel = "default_model"
     }
 
-    public static func load() throws -> Config {
-        let fileManager = FileManager.default
-        let homeDir = fileManager.homeDirectoryForCurrentUser
-        let configPath = homeDir.appendingPathComponent(".pecan/config.yaml").path
-        
-        guard fileManager.fileExists(atPath: configPath) else {
-            throw NSError(domain: "ConfigError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Config file not found at \(configPath)"])
+    /// Resolved path to the config file.
+    /// Checks `PECAN_CONFIG_PATH` env var first, then falls back to `~/.pecan/config.yaml`.
+    public static var configFilePath: String {
+        if let envPath = ProcessInfo.processInfo.environment["PECAN_CONFIG_PATH"], !envPath.isEmpty {
+            return envPath
         }
-        
+        return FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent(".pecan/config.yaml").path
+    }
+
+    public static func load() throws -> Config {
+        let configPath = configFilePath
+        guard FileManager.default.fileExists(atPath: configPath) else {
+            throw NSError(domain: "ConfigError", code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "Config file not found at \(configPath)"])
+        }
         let yamlString = try String(contentsOfFile: configPath, encoding: .utf8)
-        let decoder = YAMLDecoder()
-        return try decoder.decode(Config.self, from: yamlString)
+        return try YAMLDecoder().decode(Config.self, from: yamlString)
     }
 }
