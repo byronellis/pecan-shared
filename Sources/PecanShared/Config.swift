@@ -29,6 +29,10 @@ public struct Config: Codable, Sendable {
     
     public struct Tools: Codable, Sendable {
         public let requireApproval: Bool?
+
+        enum CodingKeys: String, CodingKey {
+            case requireApproval = "require_approval"
+        }
     }
     
     public let models: [String: ModelProvider]

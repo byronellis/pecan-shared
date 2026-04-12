@@ -31,5 +31,13 @@ let package = Package(
                 "grpc-swift-config.json",
             ]
         ),
+        .testTarget(
+            name: "PecanSharedTests",
+            dependencies: [
+                "PecanShared",
+                .product(name: "Yams", package: "Yams"),
+            ],
+            path: "Tests/PecanSharedTests"
+        ),
     ]
 )
