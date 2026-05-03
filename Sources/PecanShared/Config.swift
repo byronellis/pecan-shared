@@ -14,12 +14,16 @@ public struct Config: Codable, Sendable {
         public let modelId: String?
         public let description: String?
         public let huggingfaceRepo: String?
+        /// Maximum context window in tokens. Set this when the server doesn't include it
+        /// in completion responses (e.g. vLLM, llama.cpp with custom n_ctx).
+        public let contextWindow: Int?
 
         enum CodingKeys: String, CodingKey {
             case name, provider, url, description
             case apiKey = "api_key"
             case modelId = "model_id"
             case huggingfaceRepo = "huggingface_repo"
+            case contextWindow = "context_window"
         }
         
         public var resolvedProvider: String {
