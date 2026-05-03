@@ -320,6 +320,9 @@ public struct Pecan_SessionInfo: Sendable {
   /// ISO 8601
   public var startedAt: String = String()
 
+  /// stable display number, assigned at creation
+  public var agentNumber: Int32 = 0
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -349,6 +352,9 @@ public struct Pecan_SessionStarted: Sendable {
   public var projectName: String = String()
 
   public var teamName: String = String()
+
+  /// stable display number, assigned at creation
+  public var agentNumber: Int32 = 0
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -2293,7 +2299,7 @@ extension Pecan_ServerMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImpl
 
 extension Pecan_SessionInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".SessionInfo"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}agent_name\0\u{3}project_name\0\u{3}team_name\0\u{3}is_busy\0\u{3}started_at\0")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}agent_name\0\u{3}project_name\0\u{3}team_name\0\u{3}is_busy\0\u{3}started_at\0\u{3}agent_number\0")
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2307,6 +2313,7 @@ extension Pecan_SessionInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
       case 4: try { try decoder.decodeSingularStringField(value: &self.teamName) }()
       case 5: try { try decoder.decodeSingularBoolField(value: &self.isBusy) }()
       case 6: try { try decoder.decodeSingularStringField(value: &self.startedAt) }()
+      case 7: try { try decoder.decodeSingularInt32Field(value: &self.agentNumber) }()
       default: break
       }
     }
@@ -2331,6 +2338,9 @@ extension Pecan_SessionInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
     if !self.startedAt.isEmpty {
       try visitor.visitSingularStringField(value: self.startedAt, fieldNumber: 6)
     }
+    if self.agentNumber != 0 {
+      try visitor.visitSingularInt32Field(value: self.agentNumber, fieldNumber: 7)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -2341,6 +2351,7 @@ extension Pecan_SessionInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
     if lhs.teamName != rhs.teamName {return false}
     if lhs.isBusy != rhs.isBusy {return false}
     if lhs.startedAt != rhs.startedAt {return false}
+    if lhs.agentNumber != rhs.agentNumber {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -2378,7 +2389,7 @@ extension Pecan_SessionList: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
 
 extension Pecan_SessionStarted: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".SessionStarted"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}agent_name\0\u{3}project_name\0\u{3}team_name\0")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}agent_name\0\u{3}project_name\0\u{3}team_name\0\u{3}agent_number\0")
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2390,6 +2401,7 @@ extension Pecan_SessionStarted: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
       case 2: try { try decoder.decodeSingularStringField(value: &self.agentName) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.projectName) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self.teamName) }()
+      case 5: try { try decoder.decodeSingularInt32Field(value: &self.agentNumber) }()
       default: break
       }
     }
@@ -2408,6 +2420,9 @@ extension Pecan_SessionStarted: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     if !self.teamName.isEmpty {
       try visitor.visitSingularStringField(value: self.teamName, fieldNumber: 4)
     }
+    if self.agentNumber != 0 {
+      try visitor.visitSingularInt32Field(value: self.agentNumber, fieldNumber: 5)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -2416,6 +2431,7 @@ extension Pecan_SessionStarted: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     if lhs.agentName != rhs.agentName {return false}
     if lhs.projectName != rhs.projectName {return false}
     if lhs.teamName != rhs.teamName {return false}
+    if lhs.agentNumber != rhs.agentNumber {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

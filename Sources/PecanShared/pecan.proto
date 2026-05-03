@@ -70,6 +70,7 @@ message SessionInfo {
     string team_name = 4;
     bool is_busy = 5;
     string started_at = 6;   // ISO 8601
+    int32 agent_number = 7;  // stable display number, assigned at creation
 }
 
 message SessionList {
@@ -81,6 +82,7 @@ message SessionStarted {
     string agent_name = 2;
     string project_name = 3;
     string team_name = 4;
+    int32 agent_number = 5;  // stable display number, assigned at creation
 }
 
 message AgentOutput {
