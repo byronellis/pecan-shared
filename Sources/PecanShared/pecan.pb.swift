@@ -871,11 +871,14 @@ public struct Pecan_LLMCompletionRequest: Sendable {
 
   public var requestID: String = String()
 
-  /// e.g., 'qwen3' or 'mock'
+  /// e.g., 'local/qwen2.5-coder-7b' or 'mock'
   public var modelKey: String = String()
 
   /// optional overrides like temperature
   public var paramsJson: String = String()
+
+  /// active persona name for model resolution
+  public var currentPersona: String = String()
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -1087,6 +1090,11 @@ public struct Pecan_GetModelsResponse: Sendable {
     public var name: String = String()
 
     public var description_p: String = String()
+
+    public var contextWindow: Int32 = 0
+
+    /// actual model ID sent to the provider
+    public var modelID: String = String()
 
     public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -3536,7 +3544,7 @@ extension Pecan_CompactContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
 
 extension Pecan_LLMCompletionRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".LLMCompletionRequest"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}request_id\0\u{3}model_key\0\u{3}params_json\0")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}request_id\0\u{3}model_key\0\u{3}params_json\0\u{3}current_persona\0")
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3547,6 +3555,7 @@ extension Pecan_LLMCompletionRequest: SwiftProtobuf.Message, SwiftProtobuf._Mess
       case 1: try { try decoder.decodeSingularStringField(value: &self.requestID) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.modelKey) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.paramsJson) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.currentPersona) }()
       default: break
       }
     }
@@ -3562,6 +3571,9 @@ extension Pecan_LLMCompletionRequest: SwiftProtobuf.Message, SwiftProtobuf._Mess
     if !self.paramsJson.isEmpty {
       try visitor.visitSingularStringField(value: self.paramsJson, fieldNumber: 3)
     }
+    if !self.currentPersona.isEmpty {
+      try visitor.visitSingularStringField(value: self.currentPersona, fieldNumber: 4)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -3569,6 +3581,7 @@ extension Pecan_LLMCompletionRequest: SwiftProtobuf.Message, SwiftProtobuf._Mess
     if lhs.requestID != rhs.requestID {return false}
     if lhs.modelKey != rhs.modelKey {return false}
     if lhs.paramsJson != rhs.paramsJson {return false}
+    if lhs.currentPersona != rhs.currentPersona {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -3987,7 +4000,7 @@ extension Pecan_GetModelsResponse: SwiftProtobuf.Message, SwiftProtobuf._Message
 
 extension Pecan_GetModelsResponse.ModelInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = Pecan_GetModelsResponse.protoMessageName + ".ModelInfo"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}key\0\u{1}name\0\u{1}description\0")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}key\0\u{1}name\0\u{1}description\0\u{3}context_window\0\u{3}model_id\0")
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3998,6 +4011,8 @@ extension Pecan_GetModelsResponse.ModelInfo: SwiftProtobuf.Message, SwiftProtobu
       case 1: try { try decoder.decodeSingularStringField(value: &self.key) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.name) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.description_p) }()
+      case 4: try { try decoder.decodeSingularInt32Field(value: &self.contextWindow) }()
+      case 5: try { try decoder.decodeSingularStringField(value: &self.modelID) }()
       default: break
       }
     }
@@ -4013,6 +4028,12 @@ extension Pecan_GetModelsResponse.ModelInfo: SwiftProtobuf.Message, SwiftProtobu
     if !self.description_p.isEmpty {
       try visitor.visitSingularStringField(value: self.description_p, fieldNumber: 3)
     }
+    if self.contextWindow != 0 {
+      try visitor.visitSingularInt32Field(value: self.contextWindow, fieldNumber: 4)
+    }
+    if !self.modelID.isEmpty {
+      try visitor.visitSingularStringField(value: self.modelID, fieldNumber: 5)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -4020,6 +4041,8 @@ extension Pecan_GetModelsResponse.ModelInfo: SwiftProtobuf.Message, SwiftProtobu
     if lhs.key != rhs.key {return false}
     if lhs.name != rhs.name {return false}
     if lhs.description_p != rhs.description_p {return false}
+    if lhs.contextWindow != rhs.contextWindow {return false}
+    if lhs.modelID != rhs.modelID {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

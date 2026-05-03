@@ -245,8 +245,9 @@ message CompactContext {
 
 message LLMCompletionRequest {
     string request_id = 1;
-    string model_key = 2; // e.g., 'qwen3' or 'mock'
+    string model_key = 2; // e.g., 'local/qwen2.5-coder-7b' or 'mock'
     string params_json = 3; // optional overrides like temperature
+    string current_persona = 4; // active persona name for model resolution
 }
 
 message ToolExecutionRequest {
@@ -289,6 +290,8 @@ message GetModelsResponse {
         string key = 1;
         string name = 2;
         string description = 3;
+        int32 context_window = 4;
+        string model_id = 5;      // actual model ID sent to the provider
     }
     repeated ModelInfo models = 2;
 }
